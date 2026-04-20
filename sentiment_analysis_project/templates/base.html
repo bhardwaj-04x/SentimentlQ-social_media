@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}SentimentIQ{% endblock %} | Sakshi Puri | UID: 24BET10158</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     FIXED OWNERSHIP WATERMARK BAR (TOP)
+══════════════════════════════════ -->
+<div class="owner-topbar">
+  <div class="owner-topbar-inner">
+    <span class="owner-left">
+      <i class="bi bi-person-badge-fill me-1"></i>
+      <strong>Sakshi Puri</strong> &mdash; Social Media Sentiment Analysis
+    </span>
+    <span class="owner-center">
+      <i class="bi bi-shield-lock-fill me-1"></i> College Project &mdash; All Rights Reserved
+    </span>
+    <span class="owner-right">
+      <i class="bi bi-fingerprint me-1"></i>
+      <strong>UID:&nbsp;24BET10158</strong>
+    </span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     NAVBAR
+══════════════════════════════════ -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top siq-navbar">
+  <div class="container-xl">
+    <!-- Brand -->
+    <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('index') }}">
+      <div class="brand-icon"><i class="bi bi-graph-up-arrow"></i></div>
+      <div>
+        <span class="brand-name">SentimentIQ</span>
+        <span class="brand-sub d-none d-sm-inline">by AnalyticsCore</span>
+      </div>
+    </a>
+
+    <!-- Ownership badge - LEFT side of navbar -->
+    <div class="nav-owner-badge d-none d-lg-flex">
+      <i class="bi bi-person-fill me-1"></i>
+      <span>Sakshi Puri</span>
+    </div>
+
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav mx-auto gap-1">
+        <li class="nav-item">
+          <a class="nav-link {% if active_page == 'home' %}active{% endif %}" href="{{ url_for('index') }}">
+            <i class="bi bi-house-fill me-1"></i>Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if active_page == 'analyzer' %}active{% endif %}" href="{{ url_for('analyzer_page') }}">
+            <i class="bi bi-lightning-charge-fill me-1"></i>Analyzer
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if active_page == 'bulk' %}active{% endif %}" href="{{ url_for('bulk_page') }}">
+            <i class="bi bi-collection-fill me-1"></i>Bulk Tool
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if active_page == 'about' %}active{% endif %}" href="{{ url_for('about_page') }}">
+            <i class="bi bi-info-circle-fill me-1"></i>Project Report
+          </a>
+        </li>
+      </ul>
+
+      <!-- UID badge - RIGHT side of navbar -->
+      <div class="d-flex align-items-center gap-3">
+        <div class="nav-uid-badge">
+          <i class="bi bi-fingerprint me-1"></i>UID: 24BET10158
+        </div>
+        <span class="live-badge">
+          <span class="live-dot"></span> Live
+        </span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════
+     PAGE CONTENT
+══════════════════════════════════ -->
+{% block content %}{% endblock %}
+
+<!-- ══════════════════════════════════
+     FOOTER
+══════════════════════════════════ -->
+<footer class="siq-footer">
+  <div class="container-xl">
+    <div class="row g-4 mb-5">
+      <div class="col-lg-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div class="brand-icon brand-icon-sm"><i class="bi bi-graph-up-arrow"></i></div>
+          <span class="brand-name text-white">SentimentIQ</span>
+        </div>
+        <p class="text-muted-footer">
+          AI-powered social media sentiment analysis using VADER, TextBlob, and Machine Learning.
+        </p>
+        <!-- Ownership block in footer -->
+        <div class="footer-ownership mt-3">
+          <div class="fo-row">
+            <i class="bi bi-person-badge-fill"></i>
+            <span><strong>Author:</strong> Sakshi Puri</span>
+          </div>
+          <div class="fo-row">
+            <i class="bi bi-fingerprint"></i>
+            <span><strong>UID:</strong> 24BET10158</span>
+          </div>
+          <div class="fo-row">
+            <i class="bi bi-calendar3"></i>
+            <span><strong>Year:</strong> 2025 &mdash; College Final Project</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-2 offset-lg-1">
+        <h6 class="footer-heading">Pages</h6>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('index') }}">Home</a></li>
+          <li><a href="{{ url_for('analyzer_page') }}">Analyzer</a></li>
+          <li><a href="{{ url_for('bulk_page') }}">Bulk Tool</a></li>
+          <li><a href="{{ url_for('about_page') }}">Project Report</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6 class="footer-heading">Technology</h6>
+        <ul class="footer-links">
+          <li><a href="#">VADER NLP</a></li>
+          <li><a href="#">TextBlob</a></li>
+          <li><a href="#">Scikit-learn</a></li>
+          <li><a href="#">Flask API</a></li>
+          <li><a href="#">Bootstrap 5</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6 class="footer-heading">Project Info</h6>
+        <ul class="footer-links">
+          <li><a href="#">Subject: ML &amp; NLP</a></li>
+          <li><a href="#">Python 3.13</a></li>
+          <li><a href="#">Ensemble AI</a></li>
+          <li><a href="#">REST API</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="fb-left">
+        <i class="bi bi-person-badge-fill me-1 text-indigo"></i>
+        <strong>Sakshi Puri</strong>
+        <span class="fb-sep">|</span>
+        Social Media &amp; Sentiment Analysis
+        <span class="fb-sep">|</span>
+        &copy; 2025
+      </div>
+      <div class="fb-right">
+        <i class="bi bi-fingerprint me-1 text-indigo"></i>
+        <strong>UID: 24BET10158</strong>
+        <span class="fb-sep">|</span>
+        <span class="footer-tech-pills">
+          <span>Python</span><span>Flask</span><span>NLP</span><span>ML</span><span>Bootstrap 5</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Fixed floating watermark (bottom-right corner) -->
+<div class="floating-watermark">
+  <i class="bi bi-shield-lock-fill me-1"></i>
+  Sakshi Puri &nbsp;|&nbsp; UID: 24BET10158
+</div>
+
+<!-- Loading Overlay -->
+<div id="loader" class="siq-loader d-none">
+  <div class="loader-box">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Analyzing with AI...</div>
+    <div class="loader-sub">Running 3 models in parallel</div>
+    <div class="loader-owner mt-2">
+      <i class="bi bi-person-badge-fill me-1"></i>Sakshi Puri &nbsp;|&nbsp; UID: 24BET10158
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/common.js') }}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

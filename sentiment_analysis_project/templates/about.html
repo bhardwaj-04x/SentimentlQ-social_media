@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+{% set active_page = "about" %}
+{% block title %}Project Report — SentimentIQ{% endblock %}
+
+{% block content %}
+<section class="page-hero bg-about">
+  <div class="container-xl py-5">
+    <div class="page-hero-inner">
+      <div>
+        <div class="page-hero-label"><i class="bi bi-file-earmark-text me-1"></i>Documentation</div>
+        <h1 class="page-hero-title">Project Report</h1>
+        <p class="page-hero-sub">Complete documentation, architecture, and credits for this college project</p>
+      </div>
+      <div class="page-hero-owner">
+        <div><i class="bi bi-person-badge-fill me-1"></i><strong>Sakshi Puri</strong></div>
+        <div><i class="bi bi-fingerprint me-1"></i>UID: 24BET10158</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad bg-light">
+  <div class="container-xl">
+
+    <!-- Author card — top of report -->
+    <div class="author-card mb-5">
+      <div class="author-card-left">
+        <div class="author-avatar"><i class="bi bi-person-fill"></i></div>
+        <div>
+          <div class="author-name">Sakshi Puri</div>
+          <div class="author-role">Student — B.Tech / BCA | Artificial Intelligence & NLP</div>
+        </div>
+      </div>
+      <div class="author-card-right">
+        <div class="author-badge-row">
+          <span class="author-badge"><i class="bi bi-fingerprint me-1"></i>UID: 24BET10158</span>
+          <span class="author-badge"><i class="bi bi-calendar3 me-1"></i>2025</span>
+          <span class="author-badge"><i class="bi bi-mortarboard-fill me-1"></i>Final Year Project</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- LEFT: Report sections -->
+      <div class="col-lg-8">
+
+        <!-- Abstract -->
+        <div class="report-section">
+          <div class="rs-heading"><span class="rs-num">01</span> Abstract</div>
+          <div class="rs-body">
+            <p>This project presents <strong>SentimentIQ</strong>, a web-based AI system that performs
+            sentiment analysis on social media text using an <em>ensemble of three models</em>:
+            VADER, TextBlob, and a trained Machine Learning classifier (TF-IDF + Logistic Regression).</p>
+            <p>The final sentiment label is determined by majority vote across all three engines,
+            making the system robust against individual model errors. The system supports both
+            single-text and bulk analysis (up to 50 texts), with interactive visualizations.</p>
+          </div>
+        </div>
+
+        <!-- Objectives -->
+        <div class="report-section">
+          <div class="rs-heading"><span class="rs-num">02</span> Objectives</div>
+          <div class="rs-body">
+            <ul class="report-list">
+              <li>Build a real-time sentiment analysis system for social media text</li>
+              <li>Combine rule-based (VADER, TextBlob) and ML-based approaches into an ensemble</li>
+              <li>Develop a full-stack web application using Flask and Bootstrap 5</li>
+              <li>Provide bulk analysis capabilities with visual summary charts</li>
+              <li>Expose a REST API for programmatic access to the sentiment engine</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Architecture -->
+        <div class="report-section">
+          <div class="rs-heading"><span class="rs-num">03</span> System Architecture</div>
+          <div class="rs-body">
+            <div class="arch-diagram">
+              <div class="arch-box arch-input"><i class="bi bi-chat-text-fill"></i><span>Raw Text Input</span></div>
+              <div class="arch-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="arch-box arch-pre"><i class="bi bi-scissors"></i><span>Preprocessing (NLTK)</span></div>
+              <div class="arch-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="arch-row">
+                <div class="arch-box arch-model" style="border-color:#4f46e5"><i class="bi bi-emoji-smile"></i><span>VADER</span></div>
+                <div class="arch-box arch-model" style="border-color:#059669"><i class="bi bi-book"></i><span>TextBlob</span></div>
+                <div class="arch-box arch-model" style="border-color:#d97706"><i class="bi bi-diagram-3"></i><span>ML Model</span></div>
+              </div>
+              <div class="arch-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="arch-box arch-ensemble"><i class="bi bi-trophy-fill"></i><span>Majority Vote Ensemble</span></div>
+              <div class="arch-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="arch-box arch-output"><i class="bi bi-bar-chart-fill"></i><span>Final Sentiment + Visualizations</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Models -->
+        <div class="report-section">
+          <div class="rs-heading"><span class="rs-num">04</span> Models Used</div>
+          <div class="rs-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <div class="model-report-card border-primary">
+                  <div class="mrc-title text-primary">VADER</div>
+                  <div class="mrc-full">Valence Aware Dictionary and sEntiment Reasoner</div>
+                  <ul class="mrc-list">
+                    <li>7,500+ word lexicon</li>
+                    <li>Social media tuned</li>
+                    <li>Handles emojis, CAPS, !!!</li>
+                    <li>Compound score: −1 to +1</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="model-report-card border-success">
+                  <div class="mrc-title text-success">TextBlob</div>
+                  <div class="mrc-full">Pattern-based NLP Library</div>
+                  <ul class="mrc-list">
+                    <li>Linguistic patterns</li>
+                    <li>Polarity: −1 to +1</li>
+                    <li>Subjectivity: 0 to 1</li>
+                    <li>Objective vs subjective</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="model-report-card border-warning">
+                  <div class="mrc-title text-warning">ML Model</div>
+                  <div class="mrc-full">TF-IDF + Logistic Regression</div>
+                  <ul class="mrc-list">
+                    <li>5,000 TF-IDF features</li>
+                    <li>Unigrams + bigrams</li>
+                    <li>Trained on labeled data</li>
+                    <li>Confidence probability</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div class="report-section">
+          <div class="rs-heading"><span class="rs-num">05</span> Results &amp; Accuracy</div>
+          <div class="rs-body">
+            <div class="row g-3 mb-3">
+              <div class="col-4 text-center">
+                <div class="result-metric-box">
+                  <div class="rmb-val text-primary">~80%</div>
+                  <div class="rmb-lbl">ML Model Accuracy</div>
+                </div>
+              </div>
+              <div class="col-4 text-center">
+                <div class="result-metric-box">
+                  <div class="rmb-val text-success">3-Model</div>
+                  <div class="rmb-lbl">Ensemble Approach</div>
+                </div>
+              </div>
+              <div class="col-4 text-center">
+                <div class="result-metric-box">
+                  <div class="rmb-val text-warning">&lt; 1s</div>
+                  <div class="rmb-lbl">Response Time</div>
+                </div>
+              </div>
+            </div>
+            <p class="text-muted small">Accuracy is based on the sample dataset of 50 labeled examples.
+            The ensemble approach improves robustness over any single model.</p>
+          </div>
+        </div>
+
+        <!-- API Reference -->
+        <div class="report-section">
+          <div class="rs-heading"><span class="rs-num">06</span> API Reference</div>
+          <div class="rs-body">
+            <div class="api-table">
+              <div class="api-row api-header">
+                <div>Endpoint</div><div>Method</div><div>Description</div>
+              </div>
+              <div class="api-row"><div><code>/</code></div><div>GET</div><div>Home landing page</div></div>
+              <div class="api-row"><div><code>/analyzer</code></div><div>GET</div><div>Single text analysis page</div></div>
+              <div class="api-row"><div><code>/bulk</code></div><div>GET</div><div>Bulk analysis tool page</div></div>
+              <div class="api-row"><div><code>/about</code></div><div>GET</div><div>Project report page</div></div>
+              <div class="api-row"><div><code>/analyze</code></div><div>POST</div><div>JSON API — single text analysis</div></div>
+              <div class="api-row"><div><code>/analyze_bulk</code></div><div>POST</div><div>JSON API — bulk text analysis</div></div>
+              <div class="api-row"><div><code>/demo</code></div><div>GET</div><div>Demo with 10 pre-built examples</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Sidebar -->
+      <div class="col-lg-4">
+
+        <!-- Author card sidebar -->
+        <div class="siq-card mb-4">
+          <div class="siq-card-header"><i class="bi bi-person-badge me-2"></i>Author Details</div>
+          <div class="siq-card-body">
+            <div class="sidebar-author">
+              <div class="sa-row"><i class="bi bi-person-fill text-primary"></i><span><strong>Name:</strong> Sakshi Puri</span></div>
+              <div class="sa-row"><i class="bi bi-fingerprint text-danger"></i><span><strong>UID:</strong> 24BET10158</span></div>
+              <div class="sa-row"><i class="bi bi-mortarboard-fill text-success"></i><span><strong>Degree:</strong> B.Tech / BCA</span></div>
+              <div class="sa-row"><i class="bi bi-calendar3 text-warning"></i><span><strong>Year:</strong> 2025</span></div>
+              <div class="sa-row"><i class="bi bi-book-fill text-info"></i><span><strong>Subject:</strong> ML &amp; NLP</span></div>
+              <div class="sa-row"><i class="bi bi-laptop text-purple"></i><span><strong>Type:</strong> Final Year Project</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tech stack -->
+        <div class="siq-card mb-4">
+          <div class="siq-card-header"><i class="bi bi-code-slash me-2"></i>Tech Stack</div>
+          <div class="siq-card-body">
+            <div class="tech-stack-list">
+              <div class="tsl-row"><span class="tsl-badge" style="background:#009688">Flask</span><span>Web Framework</span></div>
+              <div class="tsl-row"><span class="tsl-badge" style="background:#4f46e5">scikit-learn</span><span>ML Engine</span></div>
+              <div class="tsl-row"><span class="tsl-badge" style="background:#e91e63">VADER</span><span>NLP — Social Media</span></div>
+              <div class="tsl-row"><span class="tsl-badge" style="background:#673ab7">TextBlob</span><span>NLP — Patterns</span></div>
+              <div class="tsl-row"><span class="tsl-badge" style="background:#2196f3">NLTK</span><span>Text Preprocessing</span></div>
+              <div class="tsl-row"><span class="tsl-badge" style="background:#150458">Pandas</span><span>Data Handling</span></div>
+              <div class="tsl-row"><span class="tsl-badge" style="background:#ff6384">Chart.js</span><span>Visualizations</span></div>
+              <div class="tsl-row"><span class="tsl-badge" style="background:#7952b3">Bootstrap 5</span><span>UI Framework</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project ID card -->
+        <div class="siq-card project-id-card">
+          <div class="siq-card-header"><i class="bi bi-shield-lock me-2"></i>Project Identity</div>
+          <div class="siq-card-body text-center">
+            <div class="pid-name">Sakshi Puri</div>
+            <div class="pid-uid">UID: 24BET10158</div>
+            <div class="pid-project">Social Media &amp; Sentiment Analysis</div>
+            <div class="pid-year">© 2025 — All Rights Reserved</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% set active_page = "analyzer" %}
+{% block title %}Analyzer — SentimentIQ{% endblock %}
+
+{% block content %}
+<section class="page-hero bg-analyzer">
+  <div class="container-xl py-5">
+    <div class="page-hero-inner">
+      <div>
+        <div class="page-hero-label"><i class="bi bi-lightning-charge-fill me-1"></i>Single Text Analysis</div>
+        <h1 class="page-hero-title">Sentiment Analyzer</h1>
+        <p class="page-hero-sub">Paste any text and get a full 3-model AI breakdown instantly</p>
+      </div>
+      <div class="page-hero-owner">
+        <div><i class="bi bi-person-badge-fill me-1"></i><strong>Sakshi Puri</strong></div>
+        <div><i class="bi bi-fingerprint me-1"></i>UID: 24BET10158</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad bg-light">
+  <div class="container-xl">
+    <div class="row g-4">
+
+      <!-- Input Panel -->
+      <div class="col-lg-5">
+        <div class="siq-card h-100">
+          <div class="siq-card-header">
+            <i class="bi bi-pencil-square me-2"></i>Input Text
+            <span class="ms-auto owner-mini">Sakshi Puri | 24BET10158</span>
+          </div>
+          <div class="siq-card-body">
+            <textarea id="single-input" class="siq-textarea" rows="7"
+              placeholder="Paste a tweet, product review, comment, or any social media text here..."></textarea>
+            <div class="d-flex justify-content-between mt-2 mb-3">
+              <small class="text-muted"><span id="char-count">0</span> / 5000 characters</small>
+              <small class="text-muted">Ctrl+Enter to analyze</small>
+            </div>
+
+            <p class="small text-muted fw-semibold mb-2">Quick Samples:</p>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+              <button class="btn btn-sample btn-sm" onclick="loadSample('pos')"><i class="bi bi-emoji-smile me-1"></i>Positive</button>
+              <button class="btn btn-sample btn-sm" onclick="loadSample('neg')"><i class="bi bi-emoji-frown me-1"></i>Negative</button>
+              <button class="btn btn-sample btn-sm" onclick="loadSample('neu')"><i class="bi bi-emoji-neutral me-1"></i>Neutral</button>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button class="btn btn-primary-custom btn-lg" onclick="analyzeSingle()">
+                <i class="bi bi-lightning-charge-fill me-2"></i>Analyze Sentiment
+              </button>
+              <button class="btn btn-outline-secondary" onclick="clearSingle()">
+                <i class="bi bi-x-circle me-2"></i>Clear
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Model info cards -->
+        <div class="row g-2 mt-3">
+          <div class="col-4">
+            <div class="model-info-card" style="border-color:#4f46e5">
+              <div class="mic-name text-primary">VADER</div>
+              <div class="mic-desc">Social media NLP</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="model-info-card" style="border-color:#059669">
+              <div class="mic-name text-success">TextBlob</div>
+              <div class="mic-desc">Polarity + subjectivity</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="model-info-card" style="border-color:#d97706">
+              <div class="mic-name text-warning">ML Model</div>
+              <div class="mic-desc">TF-IDF + LR</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Panel -->
+      <div class="col-lg-7">
+        <div id="single-placeholder" class="siq-card h-100 d-flex flex-column align-items-center justify-content-center text-center py-5">
+          <div class="placeholder-icon mb-3"><i class="bi bi-graph-up-arrow"></i></div>
+          <h5 class="text-muted">Results appear here</h5>
+          <p class="text-muted small">Enter text on the left and click Analyze</p>
+          <div class="mt-4 owner-placeholder-tag">
+            <i class="bi bi-person-badge-fill me-1"></i>Sakshi Puri
+            <span class="mx-2">|</span>
+            <i class="bi bi-fingerprint me-1"></i>UID: 24BET10158
+          </div>
+        </div>
+        <div id="single-result" class="d-none"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/analyzer.js') }}"></script>
+{% endblock %}

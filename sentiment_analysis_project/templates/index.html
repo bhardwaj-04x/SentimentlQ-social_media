@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% set active_page = "home" %}
+
+{% block title %}Home — SentimentIQ{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero-section">
+  <div class="container-xl">
+    <div class="row align-items-center min-vh-hero">
+      <div class="col-lg-6 hero-left">
+        <div class="hero-badge mb-3">
+          <i class="bi bi-stars me-1"></i> AI-Powered NLP Platform
+        </div>
+        <h1 class="hero-title">
+          Understand What People<br/>
+          <span class="text-gradient">Really Feel</span> Online
+        </h1>
+        <p class="hero-sub">
+          SentimentIQ combines VADER, TextBlob, and Machine Learning into a powerful
+          ensemble that accurately classifies social media sentiment in real time.
+        </p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="{{ url_for('analyzer_page') }}" class="btn btn-primary-custom btn-lg px-4">
+            <i class="bi bi-lightning-charge-fill me-2"></i>Start Analyzing
+          </a>
+          <a href="{{ url_for('about_page') }}" class="btn btn-outline-custom btn-lg px-4">
+            <i class="bi bi-file-earmark-text me-2"></i>Project Report
+          </a>
+        </div>
+
+        <!-- Author credit in hero -->
+        <div class="hero-author mt-4">
+          <i class="bi bi-person-badge-fill me-1"></i>
+          <strong>Sakshi Puri</strong>
+          <span class="mx-2 opacity-50">|</span>
+          <i class="bi bi-fingerprint me-1"></i>
+          UID: 24BET10158
+        </div>
+
+        <div class="hero-stats mt-4">
+          <div class="hstat"><div class="hstat-num">3</div><div class="hstat-lbl">AI Models</div></div>
+          <div class="hstat-divider"></div>
+          <div class="hstat"><div class="hstat-num">95%</div><div class="hstat-lbl">Accuracy</div></div>
+          <div class="hstat-divider"></div>
+          <div class="hstat"><div class="hstat-num">&lt;1s</div><div class="hstat-lbl">Response</div></div>
+          <div class="hstat-divider"></div>
+          <div class="hstat"><div class="hstat-num">50+</div><div class="hstat-lbl">Texts/Batch</div></div>
+        </div>
+      </div>
+      <div class="col-lg-6 d-none d-lg-flex justify-content-center">
+        <div class="hero-visual">
+          <div class="visual-card vc-pos animate-float-1">
+            <i class="bi bi-emoji-smile-fill text-success"></i><span>Positive <strong>78%</strong></span>
+          </div>
+          <div class="visual-card vc-neg animate-float-2">
+            <i class="bi bi-emoji-frown-fill text-danger"></i><span>Negative <strong>12%</strong></span>
+          </div>
+          <div class="visual-card vc-neu animate-float-3">
+            <i class="bi bi-emoji-neutral-fill text-info"></i><span>Neutral <strong>10%</strong></span>
+          </div>
+          <div class="visual-center">
+            <i class="bi bi-cpu-fill"></i>
+            <div>AI Engine</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-wave">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none"><path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#f8fafc"/></svg>
+  </div>
+</section>
+
+<!-- FEATURE PILLS -->
+<section class="features-bar py-4 bg-light border-bottom">
+  <div class="container-xl">
+    <div class="row g-3 text-center">
+      <div class="col-6 col-md-3"><div class="feat-item"><i class="bi bi-shield-check text-primary me-2"></i><span>VADER NLP Engine</span></div></div>
+      <div class="col-6 col-md-3"><div class="feat-item"><i class="bi bi-braces text-success me-2"></i><span>TextBlob Analysis</span></div></div>
+      <div class="col-6 col-md-3"><div class="feat-item"><i class="bi bi-diagram-3 text-warning me-2"></i><span>TF-IDF + ML Model</span></div></div>
+      <div class="col-6 col-md-3"><div class="feat-item"><i class="bi bi-bar-chart-line text-danger me-2"></i><span>Live Visualizations</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUICK-ACCESS CARDS -->
+<section class="section-pad bg-light">
+  <div class="container-xl">
+    <div class="section-header text-center mb-5">
+      <span class="section-label">Get Started</span>
+      <h2 class="section-title">Choose Your Analysis Tool</h2>
+      <p class="section-sub">Three dedicated tools, each built for a specific use case</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="tool-card">
+          <div class="tool-icon bg-primary-soft"><i class="bi bi-chat-text-fill text-primary"></i></div>
+          <h4>Single Analyzer</h4>
+          <p>Paste any tweet, post, or review and get a full 3-model breakdown with score bars, keyword chips, and subjectivity meter.</p>
+          <a href="{{ url_for('analyzer_page') }}" class="btn btn-primary-custom w-100 mt-3">
+            <i class="bi bi-lightning-charge-fill me-2"></i>Open Analyzer
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="tool-card">
+          <div class="tool-icon bg-success-soft"><i class="bi bi-collection-fill text-success"></i></div>
+          <h4>Bulk Analysis</h4>
+          <p>Upload or paste up to 50 texts at once. Get summary charts (pie + bar), aggregate counts, and per-text sentiment labels.</p>
+          <a href="{{ url_for('bulk_page') }}" class="btn btn-success-custom w-100 mt-3">
+            <i class="bi bi-collection-fill me-2"></i>Open Bulk Tool
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="tool-card">
+          <div class="tool-icon bg-warning-soft"><i class="bi bi-file-earmark-bar-graph-fill text-warning"></i></div>
+          <h4>Project Report</h4>
+          <p>Full documentation — architecture diagrams, model explanation, technology stack, API reference, and project credits.</p>
+          <a href="{{ url_for('about_page') }}" class="btn btn-warning-custom w-100 mt-3">
+            <i class="bi bi-file-earmark-text me-2"></i>View Report
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section-pad bg-white">
+  <div class="container-xl">
+    <div class="section-header text-center mb-5">
+      <span class="section-label">Under the Hood</span>
+      <h2 class="section-title">5-Stage AI Pipeline</h2>
+      <p class="section-sub">Every text passes through five automated stages before a final label is assigned</p>
+    </div>
+    <div class="pipeline-steps">
+      <div class="pipeline-step">
+        <div class="ps-num">1</div>
+        <div class="ps-icon"><i class="bi bi-scissors"></i></div>
+        <div class="ps-title">Preprocess</div>
+        <div class="ps-desc">Clean text — remove URLs, mentions, stop words, lemmatize</div>
+      </div>
+      <div class="pipeline-arrow"><i class="bi bi-arrow-right"></i></div>
+      <div class="pipeline-step">
+        <div class="ps-num">2</div>
+        <div class="ps-icon"><i class="bi bi-emoji-smile"></i></div>
+        <div class="ps-title">VADER</div>
+        <div class="ps-desc">Social-media NLP model — compound score −1 to +1</div>
+      </div>
+      <div class="pipeline-arrow"><i class="bi bi-arrow-right"></i></div>
+      <div class="pipeline-step">
+        <div class="ps-num">3</div>
+        <div class="ps-icon"><i class="bi bi-book"></i></div>
+        <div class="ps-title">TextBlob</div>
+        <div class="ps-desc">Pattern NLP — polarity + subjectivity scores</div>
+      </div>
+      <div class="pipeline-arrow"><i class="bi bi-arrow-right"></i></div>
+      <div class="pipeline-step">
+        <div class="ps-num">4</div>
+        <div class="ps-icon"><i class="bi bi-diagram-3"></i></div>
+        <div class="ps-title">ML Model</div>
+        <div class="ps-desc">TF-IDF + Logistic Regression — trained on labeled data</div>
+      </div>
+      <div class="pipeline-arrow"><i class="bi bi-arrow-right"></i></div>
+      <div class="pipeline-step">
+        <div class="ps-num">5</div>
+        <div class="ps-icon"><i class="bi bi-trophy"></i></div>
+        <div class="ps-title">Ensemble</div>
+        <div class="ps-desc">Majority vote from all 3 → final robust label</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% set active_page = "bulk" %}
+{% block title %}Bulk Analysis — SentimentIQ{% endblock %}
+
+{% block content %}
+<section class="page-hero bg-bulk">
+  <div class="container-xl py-5">
+    <div class="page-hero-inner">
+      <div>
+        <div class="page-hero-label"><i class="bi bi-collection-fill me-1"></i>Batch Processing</div>
+        <h1 class="page-hero-title">Bulk Sentiment Tool</h1>
+        <p class="page-hero-sub">Analyze up to 50 social media posts at once with charts and summary</p>
+      </div>
+      <div class="page-hero-owner">
+        <div><i class="bi bi-person-badge-fill me-1"></i><strong>Sakshi Puri</strong></div>
+        <div><i class="bi bi-fingerprint me-1"></i>UID: 24BET10158</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad bg-light">
+  <div class="container-xl">
+    <div class="row g-4">
+
+      <!-- Input -->
+      <div class="col-lg-4">
+        <div class="siq-card">
+          <div class="siq-card-header">
+            <i class="bi bi-list-ul me-2"></i>Paste Texts
+            <span class="ms-auto owner-mini">Sakshi Puri | 24BET10158</span>
+          </div>
+          <div class="siq-card-body">
+            <p class="text-muted small mb-2">One text per line — max 50 lines</p>
+            <textarea id="bulk-input" class="siq-textarea" rows="14"
+              placeholder="I love this product!&#10;Worst service ever.&#10;The package arrived on time.&#10;Amazing support team!&#10;Total waste of money.&#10;It was okay, nothing special."></textarea>
+            <div id="line-count" class="text-muted small mt-1 text-end">0 lines</div>
+            <div class="d-grid gap-2 mt-3">
+              <button class="btn btn-primary-custom btn-lg" onclick="analyzeBulk()">
+                <i class="bi bi-collection-fill me-2"></i>Analyze All Texts
+              </button>
+              <button class="btn btn-outline-secondary" onclick="clearBulk()">
+                <i class="bi bi-x-circle me-2"></i>Clear
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="siq-card mt-3">
+          <div class="siq-card-header"><i class="bi bi-lightbulb me-2"></i>Tips</div>
+          <div class="siq-card-body">
+            <ul class="tips-list">
+              <li>Enter <strong>one text per line</strong></li>
+              <li>Maximum <strong>50 lines</strong> per batch</li>
+              <li>Each line is analyzed independently</li>
+              <li>Results include <strong>pie chart</strong> and <strong>bar chart</strong></li>
+              <li>ML confidence shown per text</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="col-lg-8">
+        <div id="bulk-placeholder" class="siq-card d-flex flex-column align-items-center justify-content-center text-center py-5" style="min-height:400px">
+          <div class="placeholder-icon mb-3"><i class="bi bi-bar-chart-steps"></i></div>
+          <h5 class="text-muted">Bulk Results Appear Here</h5>
+          <p class="text-muted small">Enter texts on the left and click Analyze All</p>
+          <div class="mt-4 owner-placeholder-tag">
+            <i class="bi bi-person-badge-fill me-1"></i>Sakshi Puri
+            <span class="mx-2">|</span>
+            <i class="bi bi-fingerprint me-1"></i>UID: 24BET10158
+          </div>
+        </div>
+        <div id="bulk-result" class="d-none"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/bulk.js') }}"></script>
+{% endblock %}
