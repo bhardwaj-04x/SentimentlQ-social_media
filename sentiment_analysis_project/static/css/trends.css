@@ -1,0 +1,55 @@
+.bg-trends { background: linear-gradient(135deg, #0f172a 0%, #0c2340 100%); }
+
+/* India summary bar */
+.india-summary-bar { background: #1e293b; border-bottom: 1px solid #334155; padding: 12px 0; }
+.isb-inner { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; max-width: 1320px; margin: 0 auto; padding: 0 16px; }
+.isb-item  { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #94a3b8; white-space: nowrap; }
+.isb-item strong { color: white; }
+.isb-item i { font-size: 0.9rem; }
+.isb-sep   { color: #334155; font-size: 0.9rem; }
+
+/* Platform header */
+.platform-header {
+  background: white; border: 2px solid #e2e8f0; border-radius: 20px;
+  padding: 20px 24px; display: flex; justify-content: space-between;
+  align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 8px;
+  border-left-width: 6px;
+}
+.ph-left   { display: flex; align-items: center; gap: 16px; }
+.ph-icon   { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: white; flex-shrink: 0; }
+.ph-name   { font-size: 1.4rem; font-weight: 800; color: #0f172a; margin: 0; }
+.ph-desc   { font-size: 0.82rem; color: #64748b; margin: 3px 0 0; }
+.ph-stats  { display: flex; gap: 10px; flex-wrap: wrap; }
+.ph-stat   { border-radius: 12px; padding: 10px 18px; text-align: center; min-width: 70px; }
+.phs-num   { font-size: 1.4rem; font-weight: 800; line-height: 1; }
+.phs-lbl   { font-size: 0.72rem; margin-top: 2px; }
+
+/* Trend cards */
+.trend-card {
+  background: white; border: 1px solid #e2e8f0; border-radius: 16px;
+  padding: 16px; height: 100%; transition: transform 0.2s, box-shadow 0.2s;
+  border-left-width: 4px;
+}
+.trend-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+.trend-card.trend-positive { border-left-color: #10b981; }
+.trend-card.trend-negative { border-left-color: #ef4444; }
+.trend-card.trend-neutral  { border-left-color: #06b6d4; }
+.tc-top  { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.tc-num  { font-size: 0.7rem; font-weight: 800; color: #94a3b8; }
+.tc-chip { padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+.tc-text { font-size: 0.87rem; color: #374151; line-height: 1.55; margin-bottom: 10px; font-style: italic; }
+.tc-scores { display: flex; gap: 12px; flex-wrap: wrap; }
+.tc-scores span { font-size: 0.72rem; color: #94a3b8; font-weight: 600; }
+
+/* Trending topics */
+.trending-topic-chip {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: white; padding: 6px 18px; border-radius: 20px;
+  font-size: 0.82rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;
+}
+
+@media (max-width: 767px) {
+  .platform-header { flex-direction: column; align-items: flex-start; }
+  .isb-sep { display: none; }
+  .isb-inner { gap: 8px; }
+}

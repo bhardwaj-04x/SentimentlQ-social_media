@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% set active_page = "admin" %}
+{% block title %}Admin Dashboard — SentimentIQ{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}"/>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero bg-admin">
+  <div class="container-xl py-4">
+    <div class="page-hero-inner">
+      <div>
+        <div class="page-hero-label"><i class="bi bi-shield-lock-fill me-1"></i>Admin Only</div>
+        <h1 class="page-hero-title">Admin Dashboard</h1>
+        <p class="page-hero-sub">Full analytics — all guest searches, platform stats, live activity</p>
+      </div>
+      <div class="page-hero-owner">
+        <div><i class="bi bi-person-badge-fill me-1"></i><strong>Sakshi Puri</strong></div>
+        <div><i class="bi bi-fingerprint me-1"></i>UID: 24BET10158</div>
+        <div class="mt-1"><span class="admin-online-dot"></span>Admin Online</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad bg-light">
+  <div class="container-xl">
+
+    <!-- Summary KPI Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3 col-xl">
+        <div class="kpi-card kpi-total">
+          <div class="kpi-icon"><i class="bi bi-search"></i></div>
+          <div class="kpi-num">{{ stats.total }}</div>
+          <div class="kpi-lbl">Total Searches</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-xl">
+        <div class="kpi-card kpi-guests">
+          <div class="kpi-icon"><i class="bi bi-people-fill"></i></div>
+          <div class="kpi-num">{{ stats.guests }}</div>
+          <div class="kpi-lbl">Guest Users</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-xl">
+        <div class="kpi-card kpi-pos">
+          <div class="kpi-icon"><i class="bi bi-emoji-smile-fill"></i></div>
+          <div class="kpi-num">{{ stats.positive }}</div>
+          <div class="kpi-lbl">Positive</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-xl">
+        <div class="kpi-card kpi-neg">
+          <div class="kpi-icon"><i class="bi bi-emoji-frown-fill"></i></div>
+          <div class="kpi-num">{{ stats.negative }}</div>
+          <div class="kpi-lbl">Negative</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-xl">
+        <div class="kpi-card kpi-neu">
+          <div class="kpi-icon"><i class="bi bi-emoji-neutral-fill"></i></div>
+          <div class="kpi-num">{{ stats.neutral }}</div>
+          <div class="kpi-lbl">Neutral</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+      <div class="col-md-4">
+        <div class="siq-card h-100">
+          <div class="siq-card-header"><i class="bi bi-pie-chart-fill me-2"></i>Overall Sentiment Split<span class="ms-auto owner-mini">Sakshi Puri | 24BET10158</span></div>
+          <div class="siq-card-body"><canvas id="admin-pie" height="240"></canvas></div>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="siq-card h-100">
+          <div class="siq-card-header"><i class="bi bi-bar-chart-fill me-2"></i>Platform-wise Sentiment</div>
+          <div class="siq-card-body"><canvas id="platform-bar" height="200"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Platform Stats Table -->
+    {% if platform_stats %}
+    <div class="siq-card mb-4">
+      <div class="siq-card-header"><i class="bi bi-table me-2"></i>Platform Statistics<span class="ms-auto owner-mini">Sakshi Puri | 24BET10158</span></div>
+      <div class="siq-card-body p-0">
+        <div class="table-responsive">
+          <table class="table admin-table mb-0">
+            <thead><tr><th>Platform</th><th>Total Searches</th><th>Positive</th><th>Negative</th><th>Neutral</th><th>Avg Score</th><th>Mood</th></tr></thead>
+            <tbody>
+              {% for p in platform_stats %}
+              <tr>
+                <td><strong>{{ p.platform }}</strong></td>
+                <td>{{ p.total }}</td>
+                <td><span class="badge bg-success">{{ p.pos }}</span></td>
+                <td><span class="badge bg-danger">{{ p.neg }}</span></td>
+                <td><span class="badge bg-info">{{ p.neu }}</span></td>
+                <td>{{ "%.3f"|format(p.avg_compound or 0) }}</td>
+                <td>
+                  {% set avg = p.avg_compound or 0 %}
+                  {% if avg > 0.05 %}<span class="mood-pill mood-pos">😊 Positive</span>
+                  {% elif avg < -0.05 %}<span class="mood-pill mood-neg">😠 Negative</span>
+                  {% else %}<span class="mood-pill mood-neu">😐 Neutral</span>{% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="row g-4">
+      <!-- All Guest Searches -->
+      <div class="col-lg-8">
+        <div class="siq-card">
+          <div class="siq-card-header">
+            <i class="bi bi-clock-history me-2"></i>All Guest Searches (Latest {{ searches|length }})
+            <span class="ms-auto owner-mini">Sakshi Puri | 24BET10158</span>
+          </div>
+          <div class="siq-card-body p-0">
+            {% if searches %}
+            <div class="admin-search-list">
+              {% for s in searches %}
+              <div class="admin-search-item">
+                <div class="asi-meta">
+                  <span class="asi-user"><i class="bi bi-person-fill me-1"></i>{{ s.username }}</span>
+                  <span class="asi-role role-{{ s.role }}">{{ s.role }}</span>
+                  <span class="asi-platform"><i class="bi bi-app me-1"></i>{{ s.platform }}</span>
+                  <span class="asi-time text-muted"><i class="bi bi-clock me-1"></i>{{ s.timestamp[:16].replace('T',' ') }}</span>
+                </div>
+                <div class="asi-text">{{ s.text[:120] }}{% if s.text|length > 120 %}...{% endif %}</div>
+                <div class="asi-result">
+                  <span class="bulk-chip chip-{{ 'pos' if s.sentiment=='positive' else 'neg' if s.sentiment=='negative' else 'neu' }}">{{ s.sentiment }}</span>
+                  <span class="asi-score">Compound: {{ "%.3f"|format(s.compound or 0) }}</span>
+                  <span class="asi-conf">ML: {{ "%.1f"|format(s.confidence or 0) }}%</span>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5 text-muted">
+              <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+              No searches yet — guests haven't searched anything
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Registered Users -->
+      <div class="col-lg-4">
+        <div class="siq-card mb-4">
+          <div class="siq-card-header"><i class="bi bi-people-fill me-2"></i>Registered Users</div>
+          <div class="siq-card-body p-0">
+            <div class="user-list">
+              {% for u in users %}
+              <div class="user-item">
+                <div class="ui-avatar {{ 'admin-av' if u.role=='admin' else 'guest-av' }}">
+                  <i class="bi bi-{{ 'shield-fill' if u.role=='admin' else 'person-fill' }}"></i>
+                </div>
+                <div class="ui-info">
+                  <div class="ui-name">{{ u.username }}</div>
+                  <div class="ui-date">{{ u.created_at[:10] }}</div>
+                </div>
+                <span class="role-badge role-{{ u.role }}">{{ u.role }}</span>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Admin Info Card -->
+        <div class="siq-card">
+          <div class="siq-card-header"><i class="bi bi-person-badge me-2"></i>Admin Identity</div>
+          <div class="siq-card-body text-center">
+            <div class="admin-id-avatar"><i class="bi bi-shield-fill-check"></i></div>
+            <div class="admin-id-name">Sakshi Puri</div>
+            <div class="admin-id-uid">UID: 24BET10158</div>
+            <div class="admin-id-role">Administrator</div>
+            <div class="admin-id-project">Social Media &amp; Sentiment Analysis</div>
+            <div class="admin-id-year">© 2025 — Final Year Project</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const adminStats  = {{ stats | tojson }};
+const platStats   = {{ platform_stats | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

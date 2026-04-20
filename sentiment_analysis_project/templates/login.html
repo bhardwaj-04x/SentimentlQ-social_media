@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — SentimentIQ | Sakshi Puri | UID: 24BET10158</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}"/>
+</head>
+<body class="login-body">
+
+<!-- Ownership topbar -->
+<div class="owner-topbar">
+  <div class="owner-topbar-inner">
+    <span class="owner-left"><i class="bi bi-person-badge-fill me-1"></i><strong>Sakshi Puri</strong> &mdash; Social Media Sentiment Analysis</span>
+    <span class="owner-center"><i class="bi bi-shield-lock-fill me-1"></i> College Project &mdash; All Rights Reserved</span>
+    <span class="owner-right"><i class="bi bi-fingerprint me-1"></i><strong>UID:&nbsp;24BET10158</strong></span>
+  </div>
+</div>
+
+<div class="login-page">
+  <!-- Left panel -->
+  <div class="login-left d-none d-lg-flex">
+    <div class="login-left-inner">
+      <div class="ll-brand">
+        <div class="brand-icon mb-3"><i class="bi bi-graph-up-arrow"></i></div>
+        <h1 class="ll-title">SentimentIQ</h1>
+        <p class="ll-sub">AI-Powered Social Media Sentiment Analysis</p>
+      </div>
+      <div class="ll-features">
+        <div class="ll-feat"><i class="bi bi-check-circle-fill text-success"></i><span>3-Model AI Ensemble (VADER + TextBlob + ML)</span></div>
+        <div class="ll-feat"><i class="bi bi-check-circle-fill text-success"></i><span>India Social Media Platform Trends</span></div>
+        <div class="ll-feat"><i class="bi bi-check-circle-fill text-success"></i><span>Admin Dashboard with Full Analytics</span></div>
+        <div class="ll-feat"><i class="bi bi-check-circle-fill text-success"></i><span>Guest Search History Tracking</span></div>
+        <div class="ll-feat"><i class="bi bi-check-circle-fill text-success"></i><span>Bulk Analysis up to 50 Texts</span></div>
+      </div>
+      <div class="ll-owner mt-5">
+        <div class="ll-owner-row">
+          <i class="bi bi-person-badge-fill"></i>
+          <div><strong>Sakshi Puri</strong><br/><small>Author &amp; Admin</small></div>
+        </div>
+        <div class="ll-uid">UID: 24BET10158</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right panel — login form -->
+  <div class="login-right">
+    <div class="login-box">
+      <!-- Logo mobile -->
+      <div class="d-lg-none text-center mb-4">
+        <div class="brand-icon mx-auto mb-2"><i class="bi bi-graph-up-arrow"></i></div>
+        <h2 class="fw-800 text-dark">SentimentIQ</h2>
+      </div>
+
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show rounded-3 mb-3" role="alert">
+              <i class="bi bi-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }}-fill me-2"></i>{{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <!-- Tabs: Admin Login / Guest Login -->
+      <ul class="nav nav-pills login-pills mb-4" id="loginTabs">
+        <li class="nav-item flex-fill">
+          <button class="nav-link active w-100" id="admin-tab" data-bs-toggle="pill" data-bs-target="#admin-panel">
+            <i class="bi bi-shield-lock-fill me-2"></i>Admin Login
+          </button>
+        </li>
+        <li class="nav-item flex-fill">
+          <button class="nav-link w-100" id="guest-tab" data-bs-toggle="pill" data-bs-target="#guest-panel">
+            <i class="bi bi-person-fill me-2"></i>Guest Login
+          </button>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <!-- ADMIN LOGIN -->
+        <div class="tab-pane fade show active" id="admin-panel">
+          <div class="login-role-badge admin-badge mb-3">
+            <i class="bi bi-shield-lock-fill me-2"></i>
+            Admin Access — Sakshi Puri (UID: 24BET10158)
+          </div>
+          <form method="POST" action="{{ url_for('login') }}">
+            <input type="hidden" name="role" value="admin"/>
+            <div class="mb-3">
+              <label class="form-label fw-600">Username</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                <input type="text" name="username" class="form-control" placeholder="sakshi" required autocomplete="username"/>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label fw-600">Password</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                <input type="password" name="password" class="form-control" placeholder="••••••••••" required id="admin-pass"/>
+                <button type="button" class="btn btn-outline-secondary" onclick="togglePwd('admin-pass')"><i class="bi bi-eye"></i></button>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary-custom w-100 btn-lg">
+              <i class="bi bi-shield-fill-check me-2"></i>Login as Admin
+            </button>
+          </form>
+          <div class="login-hint mt-3">
+            <i class="bi bi-info-circle me-1"></i>
+            Admin has full access — guest searches, analytics, platform trends
+          </div>
+        </div>
+
+        <!-- GUEST LOGIN -->
+        <div class="tab-pane fade" id="guest-panel">
+          <div class="login-role-badge guest-badge mb-3">
+            <i class="bi bi-person-fill me-2"></i>
+            Guest Access — Limited Features
+          </div>
+
+          <!-- Guest: Register -->
+          <div class="guest-section mb-4">
+            <h6 class="fw-700 mb-3"><i class="bi bi-person-plus me-2 text-success"></i>New Guest — Register</h6>
+            <form method="POST" action="{{ url_for('register_guest') }}">
+              <div class="mb-3">
+                <label class="form-label fw-600">Choose a Username</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-person"></i></span>
+                  <input type="text" name="username" class="form-control" placeholder="e.g. rahul_99" required minlength="3" maxlength="20"/>
+                </div>
+                <div class="form-text">3–20 characters, letters and numbers only</div>
+              </div>
+              <button type="submit" class="btn btn-success-custom w-100">
+                <i class="bi bi-person-plus-fill me-2"></i>Register &amp; Enter as Guest
+              </button>
+            </form>
+          </div>
+
+          <div class="divider-text"><span>OR returning guest?</span></div>
+
+          <!-- Guest: Login -->
+          <div class="guest-section mt-3">
+            <h6 class="fw-700 mb-3"><i class="bi bi-box-arrow-in-right me-2 text-primary"></i>Returning Guest — Login</h6>
+            <form method="POST" action="{{ url_for('login') }}">
+              <input type="hidden" name="role" value="guest"/>
+              <div class="mb-3">
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-person"></i></span>
+                  <input type="text" name="username" class="form-control" placeholder="Your username" required/>
+                </div>
+              </div>
+              <div class="mb-3">
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                  <input type="password" name="password" class="form-control" placeholder="••••••" id="guest-pass" required/>
+                  <button type="button" class="btn btn-outline-secondary" onclick="togglePwd('guest-pass')"><i class="bi bi-eye"></i></button>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary-custom w-100">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Login as Guest
+              </button>
+            </form>
+          </div>
+
+          <div class="login-hint mt-3">
+            <i class="bi bi-info-circle me-1"></i>
+            Guest password is set when you register. Searches are saved and visible to Admin.
+          </div>
+        </div>
+      </div>
+
+      <div class="login-footer">
+        <i class="bi bi-person-badge-fill me-1"></i>Sakshi Puri
+        <span class="mx-2 text-muted">|</span>
+        <i class="bi bi-fingerprint me-1"></i>UID: 24BET10158
+        <span class="mx-2 text-muted">|</span>
+        © 2025 College Project
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function togglePwd(id) {
+  const el = document.getElementById(id);
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+</script>
+</body>
+</html>

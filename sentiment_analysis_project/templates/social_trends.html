@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% set active_page = "trends" %}
+{% block title %}India Social Trends — SentimentIQ{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/trends.css') }}"/>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero bg-trends">
+  <div class="container-xl py-4">
+    <div class="page-hero-inner">
+      <div>
+        <div class="page-hero-label"><i class="bi bi-india me-1"></i>India Social Media</div>
+        <h1 class="page-hero-title">Platform Sentiment Trends</h1>
+        <p class="page-hero-sub">Most used lines across Instagram, Facebook, Twitter/X, YouTube &amp; WhatsApp in India — analyzed live</p>
+      </div>
+      <div class="page-hero-owner">
+        <div><i class="bi bi-person-badge-fill me-1"></i><strong>Sakshi Puri</strong></div>
+        <div><i class="bi bi-fingerprint me-1"></i>UID: 24BET10158</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- India Summary Bar -->
+<div class="india-summary-bar">
+  <div class="container-xl">
+    <div class="isb-inner">
+      <div class="isb-item"><i class="bi bi-phone-fill"></i><span><strong>{{ summary.total_platforms }}</strong> Platforms</span></div>
+      <div class="isb-sep">|</div>
+      <div class="isb-item"><i class="bi bi-trophy-fill text-warning"></i><span>Most Active: <strong>{{ summary.most_active }}</strong></span></div>
+      <div class="isb-sep">|</div>
+      <div class="isb-item"><i class="bi bi-emoji-smile-fill text-success"></i><span>Happiest: <strong>{{ summary.most_positive }}</strong></span></div>
+      <div class="isb-sep">|</div>
+      <div class="isb-item"><i class="bi bi-emoji-frown-fill text-danger"></i><span>Most Negative: <strong>{{ summary.most_negative }}</strong></span></div>
+      <div class="isb-sep">|</div>
+      <div class="isb-item"><i class="bi bi-clock-fill"></i><span>Peak: <strong>{{ summary.peak_hours_ist }} IST</strong></span></div>
+      <div class="isb-sep">|</div>
+      <div class="isb-item"><i class="bi bi-translate"></i><span><strong>{{ summary.dominant_language }}</strong></span></div>
+    </div>
+  </div>
+</div>
+
+<section class="section-pad bg-light">
+  <div class="container-xl">
+
+    <!-- Platform overview charts -->
+    <div class="section-header text-center mb-5">
+      <span class="section-label">Live Analysis</span>
+      <h2 class="section-title">Sentiment Across India's Platforms</h2>
+      <p class="section-sub">All {{ total_phrases }} trending phrases analyzed using the 3-model ensemble</p>
+    </div>
+
+    <div class="row g-4 mb-5">
+      <div class="col-md-5">
+        <div class="siq-card h-100">
+          <div class="siq-card-header"><i class="bi bi-pie-chart-fill me-2"></i>Overall India Sentiment<span class="ms-auto owner-mini">Sakshi Puri | 24BET10158</span></div>
+          <div class="siq-card-body"><canvas id="india-pie" height="260"></canvas></div>
+        </div>
+      </div>
+      <div class="col-md-7">
+        <div class="siq-card h-100">
+          <div class="siq-card-header"><i class="bi bi-bar-chart-fill me-2"></i>Platform Sentiment Comparison</div>
+          <div class="siq-card-body"><canvas id="platform-compare" height="220"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Platform tabs -->
+    <ul class="nav nav-pills siq-pills justify-content-center mb-4 flex-wrap" id="platformTabs">
+      {% for pname, pdata in platforms.items() %}
+      <li class="nav-item">
+        <button class="nav-link {% if loop.first %}active{% endif %}"
+                data-bs-toggle="pill" data-bs-target="#plat-{{ loop.index }}">
+          <i class="{{ pdata.icon }} me-1"></i>{{ pname }}
+        </button>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <div class="tab-content">
+      {% for pname, pdata in platforms.items() %}
+      <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="plat-{{ loop.index }}">
+        <div class="platform-header" style="border-color:{{ pdata.color }}">
+          <div class="ph-left">
+            <div class="ph-icon" style="background:{{ pdata.color }}"><i class="{{ pdata.icon }}"></i></div>
+            <div>
+              <h3 class="ph-name">{{ pname }}</h3>
+              <p class="ph-desc">{{ pdata.description }}</p>
+            </div>
+          </div>
+          <div class="ph-stats">
+            {% set results = analyzed[pname] %}
+            {% set pos_c = results | selectattr('sentiment','equalto','positive') | list | length %}
+            {% set neg_c = results | selectattr('sentiment','equalto','negative') | list | length %}
+            {% set neu_c = results | selectattr('sentiment','equalto','neutral')  | list | length %}
+            <div class="ph-stat" style="background:#d1fae5;color:#065f46"><div class="phs-num">{{ pos_c }}</div><div class="phs-lbl">Positive</div></div>
+            <div class="ph-stat" style="background:#fee2e2;color:#991b1b"><div class="phs-num">{{ neg_c }}</div><div class="phs-lbl">Negative</div></div>
+            <div class="ph-stat" style="background:#dbeafe;color:#1e40af"><div class="phs-num">{{ neu_c }}</div><div class="phs-lbl">Neutral</div></div>
+          </div>
+        </div>
+
+        <div class="row g-3 mt-2">
+          {% for r in results %}
+          <div class="col-md-6 col-xl-4">
+            <div class="trend-card trend-{{ r.sentiment }}">
+              <div class="tc-top">
+                <span class="tc-num">#{{ loop.index }}</span>
+                <span class="tc-chip chip-{{ 'pos' if r.sentiment=='positive' else 'neg' if r.sentiment=='negative' else 'neu' }}">
+                  {{ '😊' if r.sentiment=='positive' else '😠' if r.sentiment=='negative' else '😐' }} {{ r.sentiment }}
+                </span>
+              </div>
+              <p class="tc-text">"{{ r.text }}"</p>
+              <div class="tc-scores">
+                <span title="VADER Compound"><i class="bi bi-speedometer2 me-1"></i>{{ r.compound }}</span>
+                <span title="ML Confidence"><i class="bi bi-cpu me-1"></i>{{ r.confidence }}%</span>
+                <span title="TextBlob Polarity"><i class="bi bi-graph-up me-1"></i>{{ r.polarity }}</span>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Top Topics in India -->
+    <div class="siq-card mt-5">
+      <div class="siq-card-header"><i class="bi bi-fire me-2"></i>Top Trending Topics in India<span class="ms-auto owner-mini">Sakshi Puri | 24BET10158</span></div>
+      <div class="siq-card-body">
+        <div class="d-flex flex-wrap gap-2">
+          {% for topic in summary.top_topics %}
+          <span class="trending-topic-chip">
+            <i class="bi bi-hash"></i>{{ topic }}
+          </span>
+          {% endfor %}
+        </div>
+        <p class="text-muted small mt-3">
+          <i class="bi bi-info-circle me-1"></i>
+          Data represents common sentiment patterns observed across Indian social media platforms.
+          Analysis performed using VADER + TextBlob + ML ensemble by
+          <strong>Sakshi Puri (UID: 24BET10158)</strong>.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const trendData = {{ trend_chart_data | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/trends.js') }}"></script>
+{% endblock %}

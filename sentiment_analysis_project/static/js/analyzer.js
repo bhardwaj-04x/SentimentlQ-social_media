@@ -7,6 +7,18 @@ const SAMPLES = {
   neu: "The package arrived today. The product looks as described in the listing. Delivery took the expected amount of time. No issues to report."
 };
 
+// Platform picker
+let selectedPlatform = 'Other';
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.pp-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pp-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedPlatform = btn.dataset.plat;
+    });
+  });
+});
+
 // Char counter
 document.getElementById('single-input').addEventListener('input', function () {
   document.getElementById('char-count').textContent = this.value.length;
@@ -32,7 +44,7 @@ async function analyzeSingle() {
   try {
     const res  = await fetch('/analyze', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text })
+      body: JSON.stringify({ text, platform: selectedPlatform })
     });
     const data = await res.json();
     if (!res.ok) { showToast(data.error || 'Analysis failed.', 'danger'); return; }
@@ -72,7 +84,7 @@ function renderResult(d) {
         <div class="result-emoji-big">${EMOJI[s]}</div>
         <div style="flex:1">
           <div class="result-label-big">${s} Sentiment</div>
-          <div class="result-sublabel">Ensemble: VADER + TextBlob + ML Model</div>
+          <div class="result-sublabel">Ensemble: VADER + TextBlob + ML Model &nbsp;|&nbsp; <i class="bi bi-app me-1"></i>${selectedPlatform}</div>
           <div class="result-owner-tag">
             <i class="bi bi-person-badge-fill me-1"></i>${d.author || 'Sakshi Puri'}
             &nbsp;|&nbsp;

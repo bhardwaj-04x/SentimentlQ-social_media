@@ -75,18 +75,44 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if active_page == 'about' %}active{% endif %}" href="{{ url_for('about_page') }}">
-            <i class="bi bi-info-circle-fill me-1"></i>Project Report
+          <a class="nav-link {% if active_page == 'trends' %}active{% endif %}" href="{{ url_for('social_trends') }}">
+            <i class="bi bi-india me-1"></i>India Trends
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link {% if active_page == 'about' %}active{% endif %}" href="{{ url_for('about_page') }}">
+            <i class="bi bi-file-earmark-text me-1"></i>Report
+          </a>
+        </li>
+        {% if is_admin %}
+        <li class="nav-item">
+          <a class="nav-link nav-admin-link {% if active_page == 'admin' %}active{% endif %}" href="{{ url_for('admin_dashboard') }}">
+            <i class="bi bi-shield-lock-fill me-1"></i>Admin
+          </a>
+        </li>
+        {% endif %}
       </ul>
 
-      <!-- UID badge - RIGHT side of navbar -->
-      <div class="d-flex align-items-center gap-3">
-        <div class="nav-uid-badge">
+      <!-- Right side: UID + user session -->
+      <div class="d-flex align-items-center gap-2">
+        <div class="nav-uid-badge d-none d-xl-flex">
           <i class="bi bi-fingerprint me-1"></i>UID: 24BET10158
         </div>
-        <span class="live-badge">
+        {% if current_user %}
+        <div class="nav-user-pill nav-role-{{ current_role }}">
+          <i class="bi bi-{{ 'shield-fill' if current_role == 'admin' else 'person-fill' }} me-1"></i>
+          {{ current_user }}
+          <span class="nup-role">{{ current_role }}</span>
+        </div>
+        <a href="{{ url_for('logout') }}" class="btn-nav-logout" title="Logout">
+          <i class="bi bi-box-arrow-right"></i>
+        </a>
+        {% else %}
+        <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-sm px-3">
+          <i class="bi bi-box-arrow-in-right me-1"></i>Login
+        </a>
+        {% endif %}
+        <span class="live-badge d-none d-sm-flex">
           <span class="live-dot"></span> Live
         </span>
       </div>

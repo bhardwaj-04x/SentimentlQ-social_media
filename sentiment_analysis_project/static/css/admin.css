@@ -1,0 +1,65 @@
+.bg-admin { background: linear-gradient(135deg, #0f172a 0%, #1a1245 100%); }
+.admin-online-dot { display: inline-block; width: 8px; height: 8px; background: #34d399; border-radius: 50%; margin-right: 6px; animation: pulse-dot 1.5s infinite; }
+
+/* KPI Cards */
+.kpi-card {
+  border-radius: 18px; padding: 20px 18px; color: white; text-align: center;
+  height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.kpi-icon   { font-size: 1.8rem; opacity: 0.85; margin-bottom: 8px; }
+.kpi-num    { font-size: 2.4rem; font-weight: 800; line-height: 1; }
+.kpi-lbl    { font-size: 0.78rem; opacity: 0.85; margin-top: 4px; }
+.kpi-total  { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
+.kpi-guests { background: linear-gradient(135deg, #0284c7, #0ea5e9); }
+.kpi-pos    { background: linear-gradient(135deg, #059669, #10b981); }
+.kpi-neg    { background: linear-gradient(135deg, #dc2626, #ef4444); }
+.kpi-neu    { background: linear-gradient(135deg, #d97706, #f59e0b); }
+
+/* Admin table */
+.admin-table thead th { background: #f8fafc; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.04em; padding: 12px 16px; border-bottom: 2px solid #e2e8f0; }
+.admin-table tbody td { padding: 12px 16px; font-size: 0.87rem; vertical-align: middle; }
+.admin-table tbody tr:hover { background: #f8fafc; }
+
+.mood-pill { padding: 3px 10px; border-radius: 20px; font-size: 0.76rem; font-weight: 600; }
+.mood-pos  { background: #d1fae5; color: #065f46; }
+.mood-neg  { background: #fee2e2; color: #991b1b; }
+.mood-neu  { background: #dbeafe; color: #1e40af; }
+
+/* Search list */
+.admin-search-list { max-height: 620px; overflow-y: auto; }
+.admin-search-item { padding: 14px 20px; border-bottom: 1px solid #f1f5f9; transition: background 0.15s; }
+.admin-search-item:hover { background: #f8fafc; }
+.asi-meta  { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 6px; }
+.asi-user  { font-size: 0.8rem; font-weight: 700; color: #4f46e5; }
+.asi-role  { font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+.role-admin{ background: rgba(79,70,229,0.1); color: #4f46e5; }
+.role-guest{ background: rgba(16,185,129,0.1); color: #059669; }
+.asi-platform { font-size: 0.78rem; color: #64748b; }
+.asi-time  { font-size: 0.74rem; }
+.asi-text  { font-size: 0.87rem; color: #374151; margin-bottom: 6px; line-height: 1.5; }
+.asi-result{ display: flex; align-items: center; gap: 10px; }
+.asi-score, .asi-conf { font-size: 0.74rem; color: #94a3b8; }
+
+/* User list */
+.user-list { max-height: 300px; overflow-y: auto; }
+.user-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #f1f5f9; }
+.user-item:hover { background: #f8fafc; }
+.ui-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.admin-av  { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; }
+.guest-av  { background: #e0f2fe; color: #0284c7; }
+.ui-info   { flex: 1; }
+.ui-name   { font-weight: 700; font-size: 0.87rem; }
+.ui-date   { font-size: 0.74rem; color: #94a3b8; }
+.role-badge{ padding: 2px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+
+/* Admin ID card */
+.admin-id-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg,#4f46e5,#7c3aed); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: white; margin: 0 auto 12px; }
+.admin-id-name    { font-size: 1.4rem; font-weight: 800; color: #0f172a; }
+.admin-id-uid     { display: inline-block; background: #eef2ff; color: #4f46e5; padding: 4px 16px; border-radius: 20px; font-weight: 700; font-size: 0.88rem; margin: 6px 0; }
+.admin-id-role    { font-size: 0.82rem; color: #059669; font-weight: 700; }
+.admin-id-project { font-size: 0.78rem; color: #64748b; margin-top: 4px; }
+.admin-id-year    { font-size: 0.72rem; color: #94a3b8; margin-top: 2px; }
+
+.admin-search-list::-webkit-scrollbar { width: 4px; }
+.admin-search-list::-webkit-scrollbar-track { background: #f8fafc; }
+.admin-search-list::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }

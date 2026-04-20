@@ -45,6 +45,19 @@
               <button class="btn btn-sample btn-sm" onclick="loadSample('neu')"><i class="bi bi-emoji-neutral me-1"></i>Neutral</button>
             </div>
 
+            <!-- Platform Selector -->
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-muted">Platform (optional)</label>
+              <div class="platform-picker" id="platform-picker">
+                <button type="button" class="pp-btn active" data-plat="Other"><i class="bi bi-globe2"></i>Other</button>
+                <button type="button" class="pp-btn" data-plat="Instagram" style="--pc:#E1306C"><i class="bi bi-instagram"></i>Instagram</button>
+                <button type="button" class="pp-btn" data-plat="Facebook" style="--pc:#1877F2"><i class="bi bi-facebook"></i>Facebook</button>
+                <button type="button" class="pp-btn" data-plat="Twitter/X" style="--pc:#000"><i class="bi bi-twitter-x"></i>Twitter/X</button>
+                <button type="button" class="pp-btn" data-plat="YouTube" style="--pc:#FF0000"><i class="bi bi-youtube"></i>YouTube</button>
+                <button type="button" class="pp-btn" data-plat="WhatsApp" style="--pc:#25D366"><i class="bi bi-whatsapp"></i>WhatsApp</button>
+              </div>
+            </div>
+
             <div class="d-grid gap-2">
               <button class="btn btn-primary-custom btn-lg" onclick="analyzeSingle()">
                 <i class="bi bi-lightning-charge-fill me-2"></i>Analyze Sentiment
