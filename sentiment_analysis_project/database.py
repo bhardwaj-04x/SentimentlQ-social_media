@@ -124,6 +124,12 @@ def get_platform_stats():
     conn.close()
     return [dict(r) for r in rows]
 
+def delete_search(search_id):
+    conn = get_db()
+    conn.execute("DELETE FROM searches WHERE id=?", (search_id,))
+    conn.commit()
+    conn.close()
+
 def get_sentiment_over_time():
     conn = get_db()
     rows = conn.execute('''
@@ -140,6 +146,12 @@ def get_all_users():
     ).fetchall()
     conn.close()
     return [dict(r) for r in rows]
+
+def delete_search(search_id):
+    conn = get_db()
+    conn.execute("DELETE FROM searches WHERE id=?", (search_id,))
+    conn.commit()
+    conn.close()
 
 def get_summary_stats():
     conn = get_db()

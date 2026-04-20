@@ -1,0 +1,647 @@
+{% extends "base.html" %}
+{% set active_page = "social" %}
+{% block title %}Social Account Analyzer — SentimentIQ{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ── Hero ── */
+.social-hero { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #4c1d95 100%); }
+
+/* ── URL Input ── */
+.url-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.url-row input { flex: 1 1 320px; border-radius: 12px !important; }
+.platform-detect { font-size: .82rem; min-height: 28px; }
+.plat-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 12px;
+              border-radius: 20px; font-weight: 600; font-size: .8rem; }
+.pb-YouTube   { background:#fee2e2; color:#991b1b; }
+.pb-Instagram { background:#fdf2f8; color:#9d174d; }
+.pb-Twitter   { background:#eff6ff; color:#1e40af; }
+.pb-Reddit    { background:#fff7ed; color:#9a3412; }
+.pb-GitHub    { background:#f0fdf4; color:#166534; }
+.pb-Facebook  { background:#eff6ff; color:#1e3a8a; }
+.pb-LinkedIn  { background:#eff6ff; color:#1e40af; }
+
+/* ── Profile card ── */
+.profile-card { border-radius: 20px; background: white; border: 2px solid #e2e8f0;
+                overflow: hidden; margin-bottom: 24px; }
+.profile-banner { height: 80px; }
+.profile-banner-yt { background: linear-gradient(135deg,#ff0000,#cc0000); }
+.profile-banner-ig { background: linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045); }
+.profile-banner-tw { background: linear-gradient(135deg,#1da1f2,#0d8fde); }
+.profile-banner-re { background: linear-gradient(135deg,#ff4500,#cc3700); }
+.profile-banner-gh { background: linear-gradient(135deg,#333,#24292e); }
+.profile-banner-fb { background: linear-gradient(135deg,#1877f2,#0d65d9); }
+.profile-banner-xx { background: linear-gradient(135deg,#000,#222); }
+.profile-info-row { display: flex; align-items: flex-end; gap: 16px; padding: 0 24px; margin-top: -28px; }
+.profile-av { width: 70px; height: 70px; border-radius: 50%; border: 3px solid white;
+              background: #e2e8f0; display: flex; align-items: center; justify-content: center;
+              font-size: 1.8rem; flex-shrink: 0; overflow: hidden; object-fit: cover; }
+.profile-av img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.profile-meta { padding-bottom: 4px; flex: 1; min-width: 0; }
+.profile-name { font-size: 1.2rem; font-weight: 800; color: #0f172a; white-space: nowrap;
+                overflow: hidden; text-overflow: ellipsis; }
+.profile-handle { font-size: .82rem; color: #64748b; }
+.profile-body { padding: 14px 24px 20px; }
+.profile-bio { font-size: .88rem; color: #374151; line-height: 1.6; margin-bottom: 12px;
+               border-left: 3px solid #e2e8f0; padding-left: 12px; }
+.bio-sent-chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px;
+                 border-radius: 20px; font-size: .75rem; font-weight: 700; }
+.bsc-positive { background: #d1fae5; color: #065f46; }
+.bsc-negative { background: #fee2e2; color: #991b1b; }
+.bsc-neutral  { background: #e5e7eb; color: #374151; }
+
+/* ── Stats row ── */
+.stat-box { text-align: center; padding: 10px 6px; }
+.stat-box-num { font-size: 1.5rem; font-weight: 800; color: #0f172a; line-height: 1; }
+.stat-box-lbl { font-size: .72rem; color: #64748b; margin-top: 2px; font-weight: 600; }
+.stat-sep { width: 1px; background: #e2e8f0; align-self: stretch; }
+
+/* ── Metric KPI cards ── */
+.metric-card { border-radius: 16px; border: none; box-shadow: 0 2px 16px rgba(0,0,0,.08);
+               transition: transform .2s; padding: 18px; }
+.metric-card:hover { transform: translateY(-3px); }
+.metric-val { font-size: 1.9rem; font-weight: 800; line-height: 1.1; }
+.metric-sub { font-size: .78rem; color: #64748b; margin-top: 2px; }
+.change-pill { display: inline-flex; align-items: center; gap: 3px; font-size: .75rem;
+               font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+.change-up   { background: #d1fae5; color: #065f46; }
+.change-down { background: #fee2e2; color: #991b1b; }
+.change-flat { background: #e5e7eb; color: #374151; }
+
+/* ── Health ring ── */
+.health-ring-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.health-ring { width: 100px; height: 100px; border-radius: 50%; display: flex;
+               align-items: center; justify-content: center; font-size: 1.7rem;
+               font-weight: 800; border: 8px solid; }
+.health-ring.good { border-color: #22c55e; color: #15803d; background: #f0fdf4; }
+.health-ring.ok   { border-color: #f59e0b; color: #92400e; background: #fffbeb; }
+.health-ring.poor { border-color: #ef4444; color: #991b1b; background: #fef2f2; }
+
+/* ── Issues & Fix cards ── */
+.issue-row { border-radius: 14px; padding: 14px 16px; display: flex; gap: 12px;
+             align-items: flex-start; margin-bottom: 10px; border-left: 4px solid; }
+.issue-row.sev-high   { background: #fef2f2; border-color: #ef4444; }
+.issue-row.sev-medium { background: #fffbeb; border-color: #f59e0b; }
+.issue-row.sev-low    { background: #eff6ff; border-color: #3b82f6; }
+.issue-row.sev-good   { background: #f0fdf4; border-color: #22c55e; }
+.issue-icon-big { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.issue-title { font-weight: 700; font-size: .9rem; margin-bottom: 3px; }
+.issue-detail { font-size: .83rem; color: #374151; margin-bottom: 6px; }
+.issue-fix { font-size: .8rem; color: #065f46; background: rgba(16,185,129,.1);
+             padding: 4px 10px; border-radius: 8px; display: inline-block; }
+.sev-badge { padding: 2px 8px; border-radius: 20px; font-size: .7rem; font-weight: 700; }
+.sev-badge.sev-high   { background: #fecaca; color: #991b1b; }
+.sev-badge.sev-medium { background: #fde68a; color: #92400e; }
+.sev-badge.sev-low    { background: #bfdbfe; color: #1e40af; }
+.sev-badge.sev-good   { background: #bbf7d0; color: #065f46; }
+
+/* ── Engagement gauge ── */
+.eng-gauge-wrap { text-align: center; }
+.eng-num { font-size: 2.5rem; font-weight: 800; line-height: 1; }
+.eng-bench { font-size: .8rem; color: #64748b; }
+.eng-status-badge { display: inline-block; padding: 3px 12px; border-radius: 20px;
+                    font-size: .8rem; font-weight: 700; margin-top: 4px; }
+.esb-excellent { background: #d1fae5; color: #065f46; }
+.esb-good      { background: #bfdbfe; color: #1e40af; }
+.esb-average   { background: #fde68a; color: #92400e; }
+.esb-low       { background: #fee2e2; color: #991b1b; }
+
+/* ── Trend badge ── */
+.trend-badge { display: inline-flex; align-items: center; gap: 5px; font-size: .82rem;
+               font-weight: 600; padding: 4px 12px; border-radius: 12px; }
+.trend-growing   { background: #d1fae5; color: #065f46; }
+.trend-declining { background: #fee2e2; color: #991b1b; }
+.trend-stable    { background: #e5e7eb; color: #374151; }
+.trend-volatile  { background: #fef3c7; color: #92400e; }
+
+/* ── Benchmark bar ── */
+.bench-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.bench-label { min-width: 100px; font-size: .82rem; font-weight: 600; color: #374151; }
+.bench-track { flex: 1; height: 10px; background: #f1f5f9; border-radius: 5px; overflow: hidden; }
+.bench-fill { height: 100%; border-radius: 5px; transition: width .8s ease; }
+.bench-value { min-width: 50px; font-size: .8rem; color: #64748b; text-align: right; }
+
+/* ── Chart card ── */
+.chart-card { border-radius: 16px; border: none; box-shadow: 0 2px 16px rgba(0,0,0,.08); }
+.chart-label { font-size: .72rem; color: #94a3b8; font-style: italic; margin-top: 4px; }
+
+/* ── Fetch warning ── */
+.fetch-warn { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;
+              padding: 10px 14px; font-size: .82rem; color: #92400e; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero social-hero">
+  <div class="container-xl py-4">
+    <div class="page-hero-inner">
+      <div>
+        <div class="page-hero-label"><i class="bi bi-link-45deg me-1"></i>Real Account Audit</div>
+        <h1 class="page-hero-title">Social Media Account Analyzer</h1>
+        <p class="page-hero-sub">
+          Paste any profile URL — get real followers, bio sentiment, main issues, fix recommendations &amp; engagement graphs
+        </p>
+      </div>
+      <div class="page-hero-owner">
+        <div><i class="bi bi-person-badge-fill me-1"></i><strong>Sakshi Puri</strong></div>
+        <div><i class="bi bi-fingerprint me-1"></i>UID: 24BET10158</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad bg-light">
+  <div class="container-xl">
+
+    <!-- ── URL Input ─────────────────────────────────────────── -->
+    <div class="siq-card mb-4">
+      <div class="siq-card-header">
+        <i class="bi bi-search me-2"></i>Enter Social Media Profile URL
+        <span class="ms-auto owner-mini">Sakshi Puri | 24BET10158</span>
+      </div>
+      <div class="siq-card-body">
+        <div class="url-row mb-3">
+          <input id="socialUrl" type="url" class="form-control form-control-lg"
+            placeholder="e.g.  https://www.youtube.com/@MrBeast   or   https://github.com/torvalds"
+            autocomplete="off" spellcheck="false"/>
+          <button id="analyzeBtn" class="btn btn-primary btn-lg px-4">
+            <i class="bi bi-bar-chart-fill me-2"></i>Analyze Account
+          </button>
+        </div>
+        <div class="platform-detect" id="platDetect">
+          <span class="text-muted" style="font-size:.8rem;">
+            Supported: &nbsp;
+            <span class="plat-badge pb-YouTube"><i class="bi bi-youtube"></i>YouTube</span>
+            <span class="plat-badge pb-Instagram"><i class="bi bi-instagram"></i>Instagram</span>
+            <span class="plat-badge pb-Twitter"><i class="bi bi-twitter-x"></i>Twitter/X</span>
+            <span class="plat-badge pb-Reddit"><i class="bi bi-reddit"></i>Reddit</span>
+            <span class="plat-badge pb-GitHub"><i class="bi bi-github"></i>GitHub</span>
+            <span class="plat-badge pb-Facebook"><i class="bi bi-facebook"></i>Facebook</span>
+          </span>
+        </div>
+        <div id="analyzeError" class="alert alert-danger mt-3 d-none"></div>
+      </div>
+    </div>
+
+    <!-- ── Results (hidden until analyzed) ───────────────────── -->
+    <div id="results" class="d-none">
+
+      <!-- Fetch warning (partial data) -->
+      <div id="fetchWarn" class="fetch-warn mb-3 d-none">
+        <i class="bi bi-info-circle-fill me-2"></i><span id="fetchWarnText"></span>
+      </div>
+
+      <!-- Profile Card (real data) -->
+      <div class="profile-card mb-4">
+        <div id="profileBanner" class="profile-banner profile-banner-gh"></div>
+        <div class="profile-info-row">
+          <div class="profile-av" id="profileAv">
+            <i class="bi bi-person-fill text-secondary"></i>
+          </div>
+          <div class="profile-meta">
+            <div class="profile-name" id="profileName">—</div>
+            <div class="profile-handle" id="profileHandle">—</div>
+          </div>
+          <div class="ms-auto pb-2 d-flex align-items-center gap-2 flex-wrap">
+            <span id="trendBadge" class="trend-badge trend-stable">
+              <i class="bi bi-dash-lg"></i> Loading
+            </span>
+            <div class="health-ring-wrap">
+              <div id="healthRing" class="health-ring ok">—</div>
+              <span class="text-muted" style="font-size:.7rem;">Health</span>
+            </div>
+          </div>
+        </div>
+        <div class="profile-body">
+          <!-- Bio -->
+          <div id="bioSection" class="d-none mb-3">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="fw-600 text-muted" style="font-size:.8rem;">BIO</span>
+              <span id="bioSentBadge" class="bio-sent-chip bsc-neutral">neutral</span>
+            </div>
+            <div class="profile-bio" id="profileBio"></div>
+          </div>
+          <!-- Stats row -->
+          <div class="d-flex gap-2 flex-wrap" id="statsRow">
+            <div class="stat-box" id="statFollowers">
+              <div class="stat-box-num" id="statFolNum">—</div>
+              <div class="stat-box-lbl" id="statFolLbl">Followers</div>
+            </div>
+            <div class="stat-sep d-none d-sm-block"></div>
+            <div class="stat-box" id="statFollowing" style="display:none!important">
+              <div class="stat-box-num" id="statFolgNum">—</div>
+              <div class="stat-box-lbl">Following</div>
+            </div>
+            <div class="stat-sep statFollowingSep d-none"></div>
+            <div class="stat-box" id="statPosts" style="display:none!important">
+              <div class="stat-box-num" id="statPostNum">—</div>
+              <div class="stat-box-lbl" id="statPostLbl">Posts</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── KPI Metrics (30-day simulation) ─────────────────── -->
+      <div class="row g-3 mb-4" id="kpiRow"></div>
+
+      <!-- ── Engagement & Benchmark ───────────────────────────── -->
+      <div class="row g-4 mb-4">
+        <!-- Engagement rate -->
+        <div class="col-md-4">
+          <div class="siq-card h-100">
+            <div class="siq-card-header"><i class="bi bi-activity me-2 text-danger"></i>Engagement Rate</div>
+            <div class="siq-card-body text-center py-4 eng-gauge-wrap">
+              <div class="eng-num" id="engRate">—</div>
+              <div class="eng-bench" id="engBench">Platform avg: —%</div>
+              <div id="engStatusBadge" class="eng-status-badge esb-average mt-2">—</div>
+              <canvas id="engGauge" height="120" class="mt-3"></canvas>
+            </div>
+          </div>
+        </div>
+        <!-- Benchmark comparison -->
+        <div class="col-md-8">
+          <div class="siq-card h-100">
+            <div class="siq-card-header"><i class="bi bi-bar-chart-fill me-2"></i>Account vs Platform Benchmark</div>
+            <div class="siq-card-body"><canvas id="benchChart" height="160"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Main Issues (real analysis) ──────────────────────── -->
+      <div class="siq-card mb-4">
+        <div class="siq-card-header">
+          <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+          Issues &amp; Fix Recommendations
+          <span class="ms-auto owner-mini">Sakshi Puri | 24BET10158</span>
+        </div>
+        <div class="siq-card-body" id="issuesList">
+          <p class="text-muted text-center py-3">No issues found.</p>
+        </div>
+      </div>
+
+      <!-- ── Charts ─────────────────────────────────────────────── -->
+      <div class="row g-4 mb-4">
+        <!-- Growth curve -->
+        <div class="col-md-12">
+          <div class="siq-card chart-card">
+            <div class="siq-card-header"><i class="bi bi-people-fill me-2"></i>Follower Growth Trajectory (12 months)</div>
+            <div class="siq-card-body">
+              <canvas id="chartGrowth" height="85"></canvas>
+              <div class="chart-label">* Growth curve simulated from current follower count using platform growth rates</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-4 mb-4">
+        <!-- Followers 30d -->
+        <div class="col-md-12">
+          <div class="siq-card chart-card">
+            <div class="siq-card-header"><i class="bi bi-person-plus-fill me-2 text-purple"></i>Follower Activity — 30 Days</div>
+            <div class="siq-card-body">
+              <canvas id="chartFollowers" height="80"></canvas>
+              <div class="chart-label">* Estimated based on account profile and typical platform engagement patterns</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-4 mb-4">
+        <div class="col-md-6">
+          <div class="siq-card chart-card">
+            <div class="siq-card-header"><i class="bi bi-hand-thumbs-up-fill me-2 text-success"></i>Daily Likes (Estimated)</div>
+            <div class="siq-card-body"><canvas id="chartLikes" height="140"></canvas></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="siq-card chart-card">
+            <div class="siq-card-header"><i class="bi bi-chat-dots-fill me-2 text-primary"></i>Daily Comments (Estimated)</div>
+            <div class="siq-card-body"><canvas id="chartComments" height="140"></canvas></div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-4 mb-4">
+        <div class="col-md-12">
+          <div class="siq-card chart-card">
+            <div class="siq-card-header"><i class="bi bi-activity me-2 text-danger"></i>Engagement Rate % — 30 Days</div>
+            <div class="siq-card-body">
+              <canvas id="chartEngagement" height="80"></canvas>
+              <div class="chart-label">* Estimated engagement pattern based on follower count and platform benchmarks</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GitHub top repos (only if GitHub) -->
+      <div id="githubRepos" class="siq-card mb-4 d-none">
+        <div class="siq-card-header"><i class="bi bi-star-fill text-warning me-2"></i>Top Repositories by Stars</div>
+        <div class="siq-card-body" id="githubReposList"></div>
+      </div>
+
+      <!-- Footer watermark -->
+      <div class="text-center py-2 text-muted" style="font-size:.75rem;">
+        <i class="bi bi-person-badge-fill me-1"></i>Sakshi Puri &nbsp;|&nbsp;
+        <i class="bi bi-fingerprint me-1"></i>UID: 24BET10158 &nbsp;|&nbsp;
+        Social Media &amp; Sentiment Analysis — 2025
+      </div>
+
+    </div><!-- /results -->
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+'use strict';
+
+let _charts = {};
+
+function fmtN(n){
+  if(!n && n!==0) return '—';
+  if(n>=1000000) return (n/1000000).toFixed(1)+'M';
+  if(n>=1000)    return (n/1000).toFixed(1)+'K';
+  return n.toString();
+}
+function changePill(v){
+  if(v > 0)  return `<span class="change-pill change-up"><i class="bi bi-arrow-up-short"></i>${Math.abs(v)}%</span>`;
+  if(v < 0)  return `<span class="change-pill change-down"><i class="bi bi-arrow-down-short"></i>${Math.abs(v)}%</span>`;
+  return `<span class="change-pill change-flat"><i class="bi bi-dash"></i>0%</span>`;
+}
+function destroyChart(id){
+  if(_charts[id]){ _charts[id].destroy(); delete _charts[id]; }
+}
+function mkLine(id, labels, datasets, opts={}){
+  destroyChart(id);
+  _charts[id] = new Chart(document.getElementById(id), {
+    type:'line', data:{labels,datasets},
+    options:{ responsive:true, plugins:{legend:{display:datasets.length>1}},
+              scales:{ x:{ticks:{maxTicksLimit:12}}, y:{beginAtZero:false,...(opts.y||{})} }, ...opts }
+  });
+}
+function mkBar(id, labels, datasets, opts={}){
+  destroyChart(id);
+  _charts[id] = new Chart(document.getElementById(id), {
+    type:'bar', data:{labels,datasets},
+    options:{ responsive:true, plugins:{legend:{position:'top'}},
+              scales:{x:{grid:{display:false}},y:{beginAtZero:true}}, ...opts }
+  });
+}
+function mkDoughnut(id, data, colors, labels){
+  destroyChart(id);
+  _charts[id] = new Chart(document.getElementById(id), {
+    type:'doughnut',
+    data:{ labels, datasets:[{ data, backgroundColor:colors, borderWidth:0, hoverOffset:6 }] },
+    options:{ plugins:{legend:{position:'bottom',labels:{padding:12,font:{size:11}}}}, cutout:'65%' }
+  });
+}
+
+// Platform detection on typing
+const PLAT_RE = {
+  'YouTube':   /youtube\.com|youtu\.be/i,
+  'Instagram': /instagram\.com/i,
+  'Twitter/X': /twitter\.com|x\.com/i,
+  'Reddit':    /reddit\.com/i,
+  'GitHub':    /github\.com/i,
+  'Facebook':  /facebook\.com/i,
+  'LinkedIn':  /linkedin\.com/i,
+};
+const PLAT_ICONS = {
+  'YouTube':'bi-youtube','Instagram':'bi-instagram','Twitter/X':'bi-twitter-x',
+  'Reddit':'bi-reddit','GitHub':'bi-github','Facebook':'bi-facebook','LinkedIn':'bi-linkedin'
+};
+document.getElementById('socialUrl').addEventListener('input', function(){
+  const v = this.value.trim();
+  const el = document.getElementById('platDetect');
+  for(const [plat, re] of Object.entries(PLAT_RE)){
+    if(re.test(v)){
+      const cls = plat.replace('/','').replace(' ','');
+      el.innerHTML = `<span class="plat-badge pb-${cls} fw-bold">
+        <i class="bi ${PLAT_ICONS[plat]}"></i> ${plat} detected — fetching real profile data</span>`;
+      return;
+    }
+  }
+  el.innerHTML = '<span class="text-muted" style="font-size:.8rem;">Start typing a profile URL...</span>';
+});
+document.getElementById('socialUrl').addEventListener('keydown', e => {
+  if(e.key==='Enter') document.getElementById('analyzeBtn').click();
+});
+
+function bannerClass(plat){
+  return({'YouTube':'yt','Instagram':'ig','Twitter/X':'xx','Reddit':'re','GitHub':'gh','Facebook':'fb','LinkedIn':'fb'}[plat]||'gh');
+}
+function sentEmoji(s){ return {'positive':'😊','negative':'😠','neutral':'😐'}[s]||'😐'; }
+
+function renderResults(d){
+  // ── Platform banner ──────────────────────────
+  const bc = bannerClass(d.platform);
+  document.getElementById('profileBanner').className = `profile-banner profile-banner-${bc}`;
+
+  // ── Avatar ────────────────────────────────────
+  const avEl = document.getElementById('profileAv');
+  if(d.avatar_url){
+    avEl.innerHTML = `<img src="${d.avatar_url}" alt="avatar" onerror="this.parentElement.innerHTML='<i class=\\'bi bi-person-fill text-secondary\\'></i>'"/>`;
+  } else {
+    const ico = PLAT_ICONS[d.platform] || 'bi-person-fill';
+    avEl.innerHTML = `<i class="bi ${ico} text-secondary"></i>`;
+  }
+
+  // ── Name / handle ─────────────────────────────
+  document.getElementById('profileName').textContent  = d.name || d.handle;
+  document.getElementById('profileHandle').textContent = `@${d.handle} · ${d.platform}`;
+
+  // ── Trend + Health ────────────────────────────
+  const tMap = {
+    growing:  ['trend-growing',  'bi-graph-up-arrow',        'Growing'],
+    declining:['trend-declining','bi-graph-down-arrow',      'Declining'],
+    stable:   ['trend-stable',   'bi-dash-lg',               'Stable'],
+    volatile: ['trend-volatile', 'bi-lightning-charge-fill', 'Volatile'],
+  };
+  const [tc,ti,tl] = tMap[d.trend] || tMap.stable;
+  const tb = document.getElementById('trendBadge');
+  tb.className = `trend-badge ${tc}`;
+  tb.innerHTML = `<i class="bi ${ti}"></i> ${tl}`;
+
+  const hr = document.getElementById('healthRing');
+  hr.textContent = d.health_score;
+  hr.className = 'health-ring ' + (d.health_score>=65?'good':d.health_score>=40?'ok':'poor');
+
+  // ── Bio ───────────────────────────────────────
+  if(d.description){
+    document.getElementById('profileBio').textContent = d.description;
+    const sc = document.getElementById('bioSentBadge');
+    const s  = d.bio_sentiment;
+    sc.className = `bio-sent-chip bsc-${s}`;
+    sc.textContent = `${sentEmoji(s)} ${s} bio (${d.bio_compound > 0 ? '+' : ''}${d.bio_compound})`;
+    document.getElementById('bioSection').classList.remove('d-none');
+  }
+
+  // ── Stats ─────────────────────────────────────
+  document.getElementById('statFolNum').textContent = d.followers_fmt || fmtN(d.followers);
+  document.getElementById('statFolLbl').textContent = d.platform==='YouTube'?'Subscribers':'Followers';
+  if(d.following !== null && d.following !== undefined){
+    document.getElementById('statFollowing').style.removeProperty('display');
+    document.getElementById('statFolgNum').textContent = d.following_fmt || fmtN(d.following);
+    document.querySelector('.statFollowingSep').classList.remove('d-none');
+  }
+  if(d.posts_count !== null && d.posts_count !== undefined){
+    document.getElementById('statPosts').style.removeProperty('display');
+    document.getElementById('statPostNum').textContent = fmtN(d.posts_count);
+    document.getElementById('statPostLbl').textContent = d.posts_label || 'Posts';
+  }
+
+  // ── Partial fetch warning ─────────────────────
+  if(d.fetch_error || d.partial){
+    const w = document.getElementById('fetchWarn');
+    document.getElementById('fetchWarnText').textContent =
+      d.fetch_error || (d.extra && d.extra.note) || 'Some profile data is limited due to platform restrictions.';
+    w.classList.remove('d-none');
+  }
+
+  // ── KPI row ──────────────────────────────────
+  const kpis = [
+    { lbl:'Followers',         icon:'people-fill',         val:fmtN(d.current_followers), ch:d.followers_change,  col:'#6f42c1' },
+    { lbl:'Avg Daily Likes',   icon:'hand-thumbs-up-fill', val:fmtN(d.avg_likes),         ch:d.likes_change,      col:'#0d6efd' },
+    { lbl:'Avg Daily Comments',icon:'chat-dots-fill',      val:fmtN(d.avg_comments),      ch:d.comments_change,   col:'#0dcaf0' },
+    { lbl:'Engagement Rate',   icon:'activity',            val:d.engagement_rate+'%',     ch:d.engagement_change, col:'#198754' },
+  ];
+  document.getElementById('kpiRow').innerHTML = kpis.map(k=>`
+    <div class="col-6 col-md-3">
+      <div class="metric-card h-100" style="background:white;">
+        <div style="color:${k.col};font-size:1.4rem;"><i class="bi bi-${k.icon}"></i></div>
+        <div class="metric-val mt-1">${k.val}</div>
+        <div class="d-flex align-items-center gap-2 mt-1">${changePill(k.ch)}<span class="metric-sub">vs prev 7d</span></div>
+        <div class="metric-sub mt-1">${k.lbl}</div>
+      </div>
+    </div>`).join('');
+
+  // ── Engagement gauge (doughnut) ───────────────
+  const eng = d.engagement;
+  document.getElementById('engRate').textContent = eng.rate + '%';
+  document.getElementById('engBench').textContent = `Platform avg: ${eng.benchmark}%`;
+  const esb = document.getElementById('engStatusBadge');
+  esb.className = `eng-status-badge esb-${eng.status}`;
+  esb.textContent = eng.status.charAt(0).toUpperCase() + eng.status.slice(1);
+  const usedPct = Math.min((eng.rate / (eng.benchmark * 2)) * 100, 100);
+  mkDoughnut('engGauge',
+    [usedPct, 100-usedPct],
+    [eng.status==='excellent'?'#10b981':eng.status==='good'?'#3b82f6':eng.status==='average'?'#f59e0b':'#ef4444', '#f1f5f9'],
+    ['Your Rate', 'Remaining']
+  );
+
+  // ── Benchmark bar chart ───────────────────────
+  const fol  = d.followers || 0;
+  const bench = {
+    YouTube:{fol:1000,eng:4}, Instagram:{fol:10000,eng:3}, 'Twitter/X':{fol:1000,eng:0.5},
+    Reddit:{fol:5000,eng:2}, GitHub:{fol:50,eng:10}, Facebook:{fol:5000,eng:0.2}
+  }[d.platform] || {fol:1000, eng:3};
+  mkBar('benchChart',
+    ['Followers / 100', `Engagement % (×10)`, 'Posts'],
+    [
+      { label:'Your Account', data:[fol/100, eng.rate*10, d.posts_count||0],
+        backgroundColor:'#6366f1', borderRadius:6 },
+      { label:'Platform Avg', data:[bench.fol/100, bench.eng*10, 50],
+        backgroundColor:'#e2e8f0', borderRadius:6 },
+    ]
+  );
+
+  // ── Issues list ───────────────────────────────
+  const issEl = document.getElementById('issuesList');
+  if(d.issues && d.issues.length){
+    issEl.innerHTML = d.issues.map(i=>`
+      <div class="issue-row sev-${i.severity}">
+        <i class="bi bi-${i.icon} issue-icon-big" style="color:${i.color}"></i>
+        <div class="flex-fill">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="issue-title">${i.title}</span>
+            <span class="sev-badge sev-${i.severity}">${i.severity.toUpperCase()}</span>
+          </div>
+          <div class="issue-detail">${i.detail}</div>
+          <div class="issue-fix"><i class="bi bi-lightbulb-fill me-1"></i>${i.fix}</div>
+        </div>
+      </div>`).join('');
+  } else {
+    issEl.innerHTML = '<p class="text-muted text-center py-3"><i class="bi bi-check-circle-fill text-success me-2"></i>No major issues detected.</p>';
+  }
+
+  // ── Growth chart ──────────────────────────────
+  mkLine('chartGrowth', d.growth_labels, [{
+    label:'Estimated Followers', data:d.growth_values,
+    borderColor:'#6366f1', backgroundColor:'rgba(99,102,241,.1)',
+    fill:true, tension:0.4, pointRadius:2
+  }]);
+
+  // ── 30-day charts ─────────────────────────────
+  const cd = d.chart_data;
+  mkLine('chartFollowers', cd.dates, [{
+    label:'Followers', data:cd.followers,
+    borderColor:'#8b5cf6', backgroundColor:'rgba(139,92,246,.1)',
+    fill:true, tension:0.4, pointRadius:2
+  }]);
+  mkLine('chartLikes', cd.dates, [{
+    label:'Likes', data:cd.likes,
+    borderColor:'#10b981', backgroundColor:'rgba(16,185,129,.1)',
+    fill:true, tension:0.4, pointRadius:2
+  }]);
+  mkLine('chartComments', cd.dates, [{
+    label:'Comments', data:cd.comments,
+    borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,.1)',
+    fill:true, tension:0.4, pointRadius:2
+  }]);
+  mkLine('chartEngagement', cd.dates, [{
+    label:'Engagement %', data:cd.engagement,
+    borderColor:'#ef4444', backgroundColor:'rgba(239,68,68,.1)',
+    fill:true, tension:0.4, pointRadius:2
+  }]);
+
+  // ── GitHub repos ──────────────────────────────
+  if(d.platform === 'GitHub' && d.extra && d.extra.top_repos && d.extra.top_repos.length){
+    const box = document.getElementById('githubRepos');
+    box.classList.remove('d-none');
+    document.getElementById('githubReposList').innerHTML =
+      `<div class="row g-3">` +
+      d.extra.top_repos.map(r=>`
+        <div class="col-md-6">
+          <div class="border rounded-3 p-3 h-100">
+            <div class="fw-700">${r.name}</div>
+            <div class="text-muted mb-2" style="font-size:.82rem;">${r.desc||'No description'}</div>
+            <span class="me-3"><i class="bi bi-star-fill text-warning me-1"></i>${r.stars}</span>
+            <span><i class="bi bi-diagram-2-fill text-secondary me-1"></i>${r.forks}</span>
+          </div>
+        </div>`).join('') + `</div>`;
+  }
+
+  document.getElementById('results').classList.remove('d-none');
+  document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.getElementById('analyzeBtn').addEventListener('click', async () => {
+  const url    = document.getElementById('socialUrl').value.trim();
+  const errEl  = document.getElementById('analyzeError');
+  errEl.classList.add('d-none');
+  document.getElementById('results').classList.add('d-none');
+  document.getElementById('fetchWarn').classList.add('d-none');
+
+  if(!url){ errEl.textContent = 'Please enter a social media profile URL.'; errEl.classList.remove('d-none'); return; }
+
+  const btn = document.getElementById('analyzeBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Fetching real data…';
+  showLoader(true);
+
+  try {
+    const res  = await fetch('/analyze_social_url', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({url})
+    });
+    const data = await res.json();
+    if(!res.ok || data.error){ errEl.textContent = data.error||'Analysis failed.'; errEl.classList.remove('d-none'); return; }
+    renderResults(data);
+  } catch(e){
+    errEl.textContent = 'Network error — make sure Flask app is running.';
+    errEl.classList.remove('d-none');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-bar-chart-fill me-2"></i>Analyze Account';
+    showLoader(false);
+  }
+});
+</script>
+{% endblock %}

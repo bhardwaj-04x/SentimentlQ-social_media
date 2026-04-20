@@ -126,7 +126,7 @@
             {% if searches %}
             <div class="admin-search-list">
               {% for s in searches %}
-              <div class="admin-search-item">
+              <div class="admin-search-item" id="search-item-{{ s.id }}">
                 <div class="asi-meta">
                   <span class="asi-user"><i class="bi bi-person-fill me-1"></i>{{ s.username }}</span>
                   <span class="asi-role role-{{ s.role }}">{{ s.role }}</span>
@@ -134,10 +134,16 @@
                   <span class="asi-time text-muted"><i class="bi bi-clock me-1"></i>{{ s.timestamp[:16].replace('T',' ') }}</span>
                 </div>
                 <div class="asi-text">{{ s.text[:120] }}{% if s.text|length > 120 %}...{% endif %}</div>
-                <div class="asi-result">
+                <div class="asi-result d-flex align-items-center gap-2 flex-wrap">
                   <span class="bulk-chip chip-{{ 'pos' if s.sentiment=='positive' else 'neg' if s.sentiment=='negative' else 'neu' }}">{{ s.sentiment }}</span>
                   <span class="asi-score">Compound: {{ "%.3f"|format(s.compound or 0) }}</span>
                   <span class="asi-conf">ML: {{ "%.1f"|format(s.confidence or 0) }}%</span>
+                  <button class="btn btn-outline-danger btn-sm ms-auto px-2 py-0 del-btn"
+                          style="font-size:.75rem;border-radius:8px;"
+                          onclick="deleteSearch({{ s.id }}, this)"
+                          title="Delete this record">
+                    <i class="bi bi-trash3-fill me-1"></i>Delete
+                  </button>
                 </div>
               </div>
               {% endfor %}
@@ -197,6 +203,27 @@
 <script>
 const adminStats  = {{ stats | tojson }};
 const platStats   = {{ platform_stats | tojson }};
+
+async function deleteSearch(id, btn){
+  if(!confirm('Delete this search record permanently?')) return;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+  try {
+    const res = await fetch(`/delete_search/${id}`, { method:'POST' });
+    if(res.ok || res.redirected){
+      const row = document.getElementById('search-item-' + id);
+      if(row){ row.style.opacity='0'; row.style.transition='opacity .3s'; setTimeout(()=>row.remove(), 320); }
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-trash3-fill me-1"></i>Delete';
+      showToast('Delete failed.', 'danger');
+    }
+  } catch(e){
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-trash3-fill me-1"></i>Delete';
+    showToast('Error: ' + e.message, 'danger');
+  }
+}
 </script>
 <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 {% endblock %}
